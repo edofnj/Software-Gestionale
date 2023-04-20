@@ -28,6 +28,15 @@ struct time{
 };
 
 int codici[30];
+int key[5];
+char user[5][20];
+
+void login(int key[5], char user[5][20]){
+  int ctrl;
+  if(sizeof(key) / sizeof(int) == 0){
+    
+  }
+}
 
 void aggiuntaProdotto(int indLog, int indLogSpesa, prodotto inventario[30], listaSpesa spesa[50]){
   char buy;
@@ -128,14 +137,12 @@ int main(){
   int indLog=0, indLogSpesa=0;
   prodotto inventario[30];
   listaSpesa spesa[50];
-  time_t rawtime;
-  struct time *info;
-  setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);
-  tzset();
-  time(&rawtime);
-  info = localtime(&rawtime);
+  time_t current_time;
+  struct tm *local_time;
+  time(&current_time);
+  local_time = localtime(&current_time);
 
-  printf("Benvenuto\t\n%s\n\n", asctime(info));
+  printf("%02d/%02d/%d\n\n\nBenvenuto\n", local_time->tm_mday, local_time->tm_mon + 1, local_time->tm_year + 1900);
 
   printf("1. ");
 
