@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include <unistd.h>
 
 typedef struct Prodotto{
   int codice;
@@ -28,15 +29,6 @@ struct time{
 };
 
 int codici[30];
-int key[5];
-char user[5][20];
-
-void login(int key[5], char user[5][20]){
-  int ctrl;
-  if(sizeof(key) / sizeof(int) == 0){
-    
-  }
-}
 
 void aggiuntaProdotto(int indLog, int indLogSpesa, prodotto inventario[30], listaSpesa spesa[50]){
   char buy;
@@ -134,15 +126,31 @@ void deleteProdotto(int indLog, prodotto inventario[30]){
 
 int main(){
   
-  int indLog=0, indLogSpesa=0;
+  int indLog=0, indLogSpesa=0, indUser=0;
   prodotto inventario[30];
   listaSpesa spesa[50];
   time_t current_time;
   struct tm *local_time;
   time(&current_time);
   local_time = localtime(&current_time);
+	int op;
 
-  printf("%02d/%02d/%d\n\n\nBenvenuto\n", local_time->tm_mday, local_time->tm_mon + 1, local_time->tm_year + 1900);
+  printf("Benvenuto\t%02d/%02d/%d\n\n", local_time->tm_mday, local_time->tm_mon + 1, local_time->tm_year + 1900);
+
+	int exitPswd = getpass("Imposta la password per la chiusura: ");
+
+	printf("1.Log In\n2.Sign Up\n\nInserisci l'operazione da eseguire: ");
+	scanf("%d", &op);
+
+	switch(op){
+		case 1:
+			
+		break;
+		case 2:
+
+		break;
+	}
+	
 
   printf("1. ");
 
@@ -152,3 +160,4 @@ int main(){
   
   return 0;
 }
+
