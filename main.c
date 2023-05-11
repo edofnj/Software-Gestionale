@@ -28,7 +28,76 @@ struct time{
   int tm_year;
 };
 
-int codici[30];
+void signup() {
+  char username[20];
+  char password_str[20], password_check_str[20];
+  int password;
+  int password_check;
+  bool check = true;
+
+  printf("Username (max 20 caratteri): ");
+  scanf("%19s", username);
+
+  do {
+    strcpy(password_str, getpass("\nPassword (max 20 numeri): "));
+    password = atoi(password_str);
+
+    strcpy(password_check_str, getpass("\nReinserisci password: "));
+    password_check = atoi(password_check_str);
+
+  	if (password != password_check) {
+      check = false;
+      printf("\nLe password non coincidono!\n");
+    } else {
+      FILE *fp = fopen("passwords.txt", "a");
+
+      fprintf(fp, "%s %d\n", username, password);
+
+      fclose(fp);
+
+      printf("\nSign up effettuato!\n");
+    }
+  } while (!check);
+}
+
+
+
+void login() {
+  char username[20];
+  char password_str[20];
+  int password;
+  bool logged_in = false;
+
+  printf("Username: ");
+  scanf("%19s", username);
+
+  strcpy(password_str, getpass("Password: "));
+  password = atoi(password_str);
+
+  FILE *fp = fopen("passwords.txt", "r");
+
+  while (!feof(fp)) {
+    char file_username[20];
+    char file_password_str[20];
+    int file_password;
+
+    fscanf(fp, "%s %s\n", file_username, file_password_str);
+    file_password = atoi(file_password_str);
+
+    if (strcmp(username, file_username) == 0 && password == file_password) {
+      logged_in = true;
+      break;
+    }
+  }
+
+  fclose(fp);
+
+  if (logged_in) {
+    printf("\nAccesso consentito!\n");
+  } else {
+    printf("\nAccesso negato!\n");
+  }
+}
 
 void aggiuntaProdotto(int indLog, int indLogSpesa, prodotto inventario[30], listaSpesa spesa[50]){
   char buy;
@@ -41,7 +110,7 @@ void aggiuntaProdotto(int indLog, int indLogSpesa, prodotto inventario[30], list
       code = true;
       for(int i=0; i<indLog; i++){
         if(inventario[i].codice == inventario[indLog].codice){
-          printf("Errore: il codice inserito Ã¨ giÃ  stato utilizzato per un altro prodotto.\n");
+          printf("Errore: il codice inserito è già stato utilizzato per un altro prodotto.\n");
           code = false;
           break;
         }
@@ -61,7 +130,7 @@ void aggiuntaProdotto(int indLog, int indLogSpesa, prodotto inventario[30], list
       printf("Vuoi acquistarne altri (S/N)? ");
       scanf(" %c", &buy);
       if(buy == 'S' || buy == 's'){
-        printf("Inserire la quantitÃ : ");
+        printf("Inserire la quantità: ");
         scanf("%d", &spesa[indLogSpesa].quantita);
         spesa[indLogSpesa].codice = inventario[indLog].codice;
         strcpy(spesa[indLogSpesa].nome, inventario[indLog].nome);
@@ -82,12 +151,12 @@ void stampa(int indLog, int indLogSpesa, prodotto inventario[30], listaSpesa spe
   switch(op){
     case 1:
       for(int i=0; i<indLog+1; i++){
-        printf("Codice: %d\nNome: %s\nPrezzo: %.2f\nDescrizione: %s\nQuantitÃ : %d\n\n", inventario[i].codice, inventario[i].nome, inventario[i].prezzo, inventario[i].descrizione, inventario[i].quantita);
+        printf("Codice: %d\nNome: %s\nPrezzo: %.2f\nDescrizione: %s\nQuantità: %d\n\n", inventario[i].codice, inventario[i].nome, inventario[i].prezzo, inventario[i].descrizione, inventario[i].quantita);
       }
       break;
     case 2:
       for(int i=0; i<indLogSpesa+1; i++){
-        printf("Codice: %d\nNome: %s\nPrezzo: %.2f\nQuantitÃ : %d\n\n", spesa[i].codice, spesa[i].nome, spesa[i].prezzo, spesa[i].quantita);
+        printf("Codice: %d\nNome: %s\nPrezzo: %.2f\nQuantità: %d\n\n", spesa[i].codice, spesa[i].nome, spesa[i].prezzo, spesa[i].quantita);
       }
       break;
     default:
@@ -134,30 +203,34 @@ int main(){
   time(&current_time);
   local_time = localtime(&current_time);
 	int op;
+	bool log = false;
 
   printf("Benvenuto\t%02d/%02d/%d\n\n", local_time->tm_mday, local_time->tm_mon + 1, local_time->tm_year + 1900);
 
-	int exitPswd = getpass("Imposta la password per la chiusura: ");
+	do{
+		printf("1.Log In\n2.Sign Up\n\nInserisci l'operazione da eseguire: ");
+		scanf("%d", &op);
+		switch(op){
+			case 1:
+				login();
+				log = true;
+			break;
+			case 2:
+				signup();
+				
+			break;
+		}
+	}while(!log);
 
-	printf("1.Log In\n2.Sign Up\n\nInserisci l'operazione da eseguire: ");
-	scanf("%d", &op);
-
-	switch(op){
-		case 1:
-			
-		break;
-		case 2:
-
-		break;
-	}
+	system("clear");
 	
-
   printf("1. ");
 
   aggiuntaProdotto(indLog, indLogSpesa, inventario, spesa);
 
   stampa(indLog, indLogSpesa, inventario, spesa);
-  
+	
   return 0;
 }
+
 
