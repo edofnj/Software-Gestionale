@@ -14,12 +14,6 @@ typedef struct Prodotto {
   int quantita;
 } prodotto;
 
-typedef struct Acquisti {
-  int codice;
-  char nome[20];
-  float prezzo;
-  int quantita;
-} listaSpesa;
 
 static int callback(void *data, int argc, char **argv, char **azColName) {
   int i;
@@ -38,7 +32,7 @@ void signup() {
   char *zErrMsg = 0;
   int rc;
   char *sql;
-  bool check = true; // Inizializzato a true
+  bool check = true;
 
   // Apertura del database
   rc = sqlite3_open("database.db", &db);
@@ -50,7 +44,7 @@ void signup() {
     fprintf(stdout, "Database aperto con successo\n");
   }
 
-  char username[21]; // Aumentato di 1 per il carattere terminatore '\0'
+  char username[21]; 
   int password;
   int password_check;
 
@@ -124,7 +118,7 @@ void login() {
     printf("Inserisci l'username: ");
     getchar();
     fgets(username, sizeof(username), stdin);
-    username[strcspn(username, "\n")] = '\0'; // Rimuove il newline finale
+    username[strcspn(username, "\n")] = '\0'; 
 		
     printf("\nPassword: ");
     scanf("%d", &password);
@@ -148,7 +142,7 @@ void login() {
   sqlite3_close(db);
 }
 
-void aggiuntaProdotto(int indLog, int indLogSpesa, prodotto inventario[30], listaSpesa spesa[50]) {
+void aggiuntaProdotto(int indLog, prodotto inventario[30]) {
   char buy;
   char op;
   bool code;
@@ -228,7 +222,7 @@ void aggiuntaProdotto(int indLog, int indLogSpesa, prodotto inventario[30], list
   sqlite3_close(db);
 }
 
-void stampa(int indLog, int indLogSpesa, prodotto inventario[30], listaSpesa spesa[50]) {
+void stampa(int indLog, prodotto inventario[30]) {
   int op;
   int i;
   sqlite3 *db;
@@ -313,7 +307,7 @@ void deleteProdotto(int indLog, prodotto inventario[30]) {
 }
 
 
-void ricerca(int indLog, int indLogSpesa, prodotto inventario[30], listaSpesa spesa[50]) {
+void ricerca(int indLog, prodotto inventario[30]) {
   int op;
   char name[20];
   int code;
@@ -509,10 +503,9 @@ void modificaQuantita(int indLog, prodotto inventario[30]) {
 }
 
 int main() {
-  int indLog = 0, indLogSpesa = 0, indUser = 0;
+  int indLog = 0, indUser = 0;
   char a;
   prodotto inventario[30];
-  listaSpesa spesa[50];
   time_t current_time;
   struct tm *local_time;
   time(&current_time);
@@ -555,16 +548,16 @@ int main() {
 
     switch (operazione) {
     case 1:
-      aggiuntaProdotto(indLog, indLogSpesa, inventario, spesa);
+      aggiuntaProdotto(indLog, inventario);
       break;
     case 2:
       deleteProdotto(indLog, inventario);
       break;
     case 3:
-      stampa(indLog, indLogSpesa, inventario, spesa);
+      stampa(indLog, inventario);
       break;
     case 4:
-      ricerca(indLog, indLogSpesa, inventario, spesa);
+      ricerca(indLog, inventario);
       break;
     case 5:
       trovaQuantita(indLog, inventario);
